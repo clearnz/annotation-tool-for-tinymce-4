@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Annotate demo</title>
+	<script src="javascript/jquery-3.1.1.min.js"></script>
+	<script src='javascript/tinymce/tinymce.min.js'></script>
+	<script language="javascript" type="text/javascript">
+
+		// activate tinymce editor on the textarea with id="canvas"
+		tinymce.init({
+			selector: '#canvas',
+			width: 1000,
+			height: 800,
+			plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table contextmenu paste annotate',
+			toolbar: "insertfile undo redo | styleselect | bold italic underline subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link unlink image table | annotate delete-annotation | code",
+			content_css: 'css/style.css',
+			init_instance_callback: function (editor) {
+				// when user double-clicks on an annotation SPAN, select the entire SPAN
+				editor.on('DblClick', function (e) {
+					try {
+						if (annotationSelected) {
+							// Convert the target element of the click event into a native dom element, hence [0], then look at each parent element until we find a matching annotation SPAN
+							editor.selection.select($(e.target)[0].closest('.annotation'));
+						}
+					} catch (err) { }
+				});
+				editor.on('MouseOut', function (e) {
+					hideTooltip();
+				});
+				editor.on('keyup', function (e) {
+					textChanged = true;
+				});
+			}
+		});
+
+		function hideTooltip() {
+			$('#editPaperWindow').css("display", "none");
+		}
+
+	</script>
+</head>
+
+<body>
+	<div id="editPaperWindow" style="display:none; position:absolute; z-index:100; background:#fff; color:#000; border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border: 2px solid #ADADAD; width:400px; padding:6px; -webkit-box-shadow: 7px 7px 12px 0px rgba(168,168,168,0.37); -moz-box-shadow: 7px 7px 12px 0px rgba(168,168,168,0.37); box-shadow: 7px 7px 12px 0px rgba(168,168,168,0.37);"></div>
+	<textarea name="canvas" id="canvas" rows="35" cols="86">This demo adds an annotation tool to the plugins directory. The author highlights a word or phrase within the TinyMCE editor and clicks the annotation icon in the toolbar (that's the little balloon-tip icon above). A popup window allows the author to input text as the annotation. The annotated text will appear as a yellow highlight and can be edited by clicking anywhere within the highlight and clicking the annotation icon again.<br /><br />
+	
+The tool basically wraps the highlighted text in a SPAN tag and the annotation text is saved as an attribute of the SPAN tag, eg. <pre>	<<span>span class="annotation" data-annotation-value="whatever you typed">The text that you highlighted<<span>/span></pre><br />
+
+To include the annotation icons within the TinyMCE toolbar you must add this code to the init function:
+	
+<pre>	// activate tinymce editor on the textarea with id="canvas".
+	// Notice the addition of annotate and delete-annotation in the plugins and toolbar attributes.
+	tinymce.init({
+		selector: '#canvas',
+		width : 1000,
+		height:800,
+		plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace
+			visualblocks code fullscreen insertdatetime media table contextmenu paste annotate',
+		toolbar: "insertfile undo redo | styleselect | bold italic underline subscript superscript | 
+			alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | 
+			link unlink image table | annotate delete-annotation | code",
+		content_css : 'css/style.css',
+		init_instance_callback: function (editor) { // when user double-clicks on an annotation SPAN, select the entire SPAN
+			editor.on('DblClick', function (e) {
+				try {
+					if (annotationSelected) {
+						// Convert the target element of the click event into a native dom element, hence [0], then look at each parent element until we find a matching annotation SPAN editor.selection.select($(e.target)[0].closest('.annotation'));
+					}
+				 } catch (err) { }
+			});
+			editor.on('MouseOut', function (e) {
+				hideTooltip();
+			});
+		 	editor.on('keyup', function (e) {
+				 textChanged = true;
+			});
+		}
+	});
+	function hideTooltip() {
+		$('#editPaperWindow').css("display", "none");
+	}
+	</pre><br /><br />
+	
+And add the following selector to your stylesheet, otherwise the annotated text won't have the yellow highlight.
+<pre>
+	.annotation {
+		background: url('../javascript/tinymce/plugins/annotate/img/transparent-yellow.png') transparent;
+	}
+</pre>
+
+On the public-facing website, the annotation can be read using jQuery, eg.
+
+<pre>	var annotations = $(".annotation");
+	annotations.each( function() {
+		var annotationText = $(this).attr('data-annotation-value');
+	});
+</pre>
+
+</textarea>
+</body>
+
+</html>

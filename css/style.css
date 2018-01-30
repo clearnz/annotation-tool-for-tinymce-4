@@ -1,0 +1,5 @@
+@charset "utf-8";
+/* CSS Document */
+.annotation {
+	background: url('../javascript/tinymce/plugins/annotate/img/transparent-yellow.png') transparent;
+}
