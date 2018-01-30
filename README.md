@@ -1,5 +1,6 @@
 # annotation-tool-for-tinymce-4
-Annotate text and images within TinyMCE 4 editor.
+Annotate text and images within TinyMCE 4 editor. Note that there is no guarantee that this code will work in versions of TinyMCE > 4.6.1
+
 This plugin adds an annotation tool to the plugins directory. The user highlights a word or phrase within the TinyMCE editor and clicks the annotation icon in the toolbar. A popup window allows the author to input text as the annotation. The annotated text will appear as a yellow highlight and can be edited by clicking anywhere within the highlight and clicking the annotation icon again.
 
 The tool basically wraps the highlighted text in a SPAN tag and the annotation text is saved as an attribute of the SPAN tag, eg.
